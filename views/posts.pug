@@ -3,23 +3,22 @@ html(lang="ja")
   head
     meta(charset="UTF-8")
     link(rel="stylesheet",
-    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css",
-    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm",
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css",
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC",
     crossorigin="anonymous")
     title NNチャット
-  body(class = currentTheme === 'light' ? "container" : "container bg-dark text-white")
+  body(class=(currentTheme === 'light' ? 'container' : 'container bg-dark text-white'))
     div.my-3
-      a(href="/logout").btn.btn-info.float-right ログアウト
+      a(href="/logout").btn.btn-info.float-end ログアウト
       h1 NNチャット
     form(method="post" action="/posts")
-      div.form-group
-        textarea(name="content" rows="4" class = currentTheme === 'light' ? "form-control" : "form-control bg-secondary text-white")
+      div.col-12
+        textarea(name="content" rows="4" class=(currentTheme === 'light' ? 'form-control' : 'form-control bg-secondary text-white'))
         input(type="hidden" name="oneTimeToken" value=oneTimeToken)
-      div.form-group
+      div.col-12
         button(type="submit").btn.btn-primary 送信
-    a(href="/changeTheme").btn.btn-primary.mb-3 #{currentTheme==='light'?"ダークモード":"ライトモード"}へ切り替え
+    a(href="/changeTheme").btn.btn-primary.mb-3 #{currentTheme==='light' ? 'ダークモード' : 'ライトモード'}へ切り替え
 
-    h2 投稿一覧
     - let defaultCardClass = (currentTheme === 'light' ? 'card my-3' : 'card my-3 bg-secondary text-white')
     each post in posts
       - let cardClass = (user === post.postedBy ? 'card my-3 bg-primary text-white' : defaultCardClass)
@@ -30,13 +29,12 @@ html(lang="ja")
             form(method="post" action="/posts/delete")
               input(type="hidden" name="id" value=post.id)
               input(type="hidden" name="oneTimeToken" value=oneTimeToken)
-              button(type="submit").btn.btn-danger.float-right 削除
+              button(type="submit").btn.btn-danger.float-end 削除
         div.card-body
           b #{post.postedBy}
-          small.float-right #{post.formattedCreatedAt}
+          small.float-end #{post.formattedCreatedAt}
           p.card-text(style="white-space:pre; overflow:auto;") #{post.content}
 
-    script(src="https://code.jquery.com/jquery-3.4.1.slim.min.js")
-    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js",
-    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl",
-    crossorigin="anonymous")
+  script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js",
+  integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM",
+  crossorigin="anonymous")

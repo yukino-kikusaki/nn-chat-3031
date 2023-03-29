@@ -1,6 +1,6 @@
 'use strict';
 const pug = require('pug');
-const assert = require('assert');
+const assert = require('node:assert');
 
 // pug のテンプレートにおける XSS 脆弱性のテスト
 const html = pug.renderFile('./views/posts.pug', {
