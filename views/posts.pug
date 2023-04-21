@@ -2,39 +2,64 @@ doctype html
 html(lang="ja")
   head
     meta(charset="UTF-8")
-    link(rel="stylesheet",
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css",
-    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC",
-    crossorigin="anonymous")
+    link(rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous")
+    link(rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css")
+    link(rel="stylesheet" href="style.css")
     title NNチャット
-  body(class=(currentTheme === 'light' ? 'container' : 'container bg-dark text-white'))
-    div.my-3
-      a(href="/logout").btn.btn-info.float-end ログアウト
-      h1 NNチャット
-    form(method="post" action="/posts")
-      div.col-12
-        textarea(name="content" rows="4" class=(currentTheme === 'light' ? 'form-control' : 'form-control bg-secondary text-white'))
-        input(type="hidden" name="oneTimeToken" value=oneTimeToken)
-      div.col-12
-        button(type="submit").btn.btn-primary 送信
-    a(href="/changeTheme").btn.btn-primary.mb-3 #{currentTheme==='light' ? 'ダークモード' : 'ライトモード'}へ切り替え
-
-    - let defaultCardClass = (currentTheme === 'light' ? 'card my-3' : 'card my-3 bg-secondary text-white')
+  - let bodyColor = (currentTheme === 'light' ? '' : 'bg-dark text-white');
+  body.container.overflow-scroll(class=bodyColor)
+    nav.navbar.fixed-top.navbar-dark.bg-primary
+      div.container-fluid
+        h1.text-light.navbar-brand.mx-auto NNチャット
+          i.bi-chat-dots-fill.ms-1
+        div.dropdown
+          - let dropdownButtonColor = (currentTheme === 'light' ? 'btn-outline-light' : 'btn-outline-dark text-white');
+          button.btn.dropdown-toggle(type="button" class=dropdownButtonColor id="menu" data-bs-toggle="dropdown" aria-expanded="false") #{user}
+            i.bi-gear-fill.ms-1
+          - let dropdownMenuColor = (currentTheme === 'light' ? '' : 'dropdown-menu-dark');
+          ul.dropdown-menu.dropdown-menu-end(class=dropdownMenuColor aria-labelledby="menu")
+            li
+              - let changeThemeText = (currentTheme === 'light' ? 'ダークモードに切り替え' : 'ライトモードに切り替え');
+              a.dropdown-item(href="/changeTheme") #{changeThemeText}
+              a.dropdown-item(href="/logout") ログアウト
+    - let defaultCardColor = (currentTheme === 'light' ? '' : 'bg-dark border-secondary')
+    - let ownerCardColor = (currentTheme === 'light' ? 'border-primary' : 'bg-dark border-primary')
     each post in posts
-      - let cardClass = (user === post.postedBy ? 'card my-3 bg-primary text-white' : defaultCardClass)
-      div(class=cardClass)
+      - let cardColor = (user === post.postedBy ? ownerCardColor : defaultCardColor )
+      div.card.my-3(class=cardColor)
+        div.card-body
+          div.d-flex.justify-content-between
+            h5.card-title #{post.postedBy}
+              if post.postedBy === 'admin'
+                i.bi-patch-check-fill.ms-1
+            - let tooltipTitle = `<small>${post.formattedCreatedAt}</small>`
+            small.card-text.text-muted.float-end(data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true" title=tooltipTitle) #{post.relativeCreatedAt}
+          p.card-text.lead #{post.content}
         - let isDeletable = (user === post.postedBy || user === 'admin')
         if isDeletable
-          div.card-header
+          div.card-footer.d-flex.justify-content-end
             form(method="post" action="/posts/delete")
               input(type="hidden" name="id" value=post.id)
               input(type="hidden" name="oneTimeToken" value=oneTimeToken)
-              button(type="submit").btn.btn-danger.float-end 削除
-        div.card-body
-          b #{post.postedBy}
-          small.float-end #{post.formattedCreatedAt}
-          p.card-text(style="white-space:pre; overflow:auto;") #{post.content}
+              - let deleteButtonColor = (currentTheme === 'light' ? 'btn-outline-danger' : 'btn-danger');
+              button.btn.btn-sm(type="submit" class=deleteButtonColor)
+                i.bi-trash
+    - let footerColor = (currentTheme === 'light' ? 'bg-white' : 'bg-dark');
+    div.fixed-bottom.p-4(class=footerColor)
+      form(method="post" action="/posts" name="message-form").container-fluid.row.g-3
+        div.col-12
+          - let textareaColor = (currentTheme === 'light' ? '' : 'bg-dark text-white');
+          textarea.form-control(name="content" rows="4" placeholder="Ctrl(Command)+Enterで送信できます" class=textareaColor)
+          input(type="hidden" name="oneTimeToken" value=oneTimeToken)
+        div.col-12
+          button(type="submit").btn.btn-primary.float-end
+            i.bi-send
 
-  script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js",
-  integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM",
-  crossorigin="anonymous")
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous")
+    script(src="nn-chat.js")
