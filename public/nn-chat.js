@@ -1,8 +1,6 @@
 'use strict';
 // 一番下を表示
-window.onload = function() {
-  window.scrollTo(0,document.body.scrollHeight);
-}
+window.addEventListener('load', () => {  window.scrollTo(0, document.body.scrollHeight);});
 
 // エンターキー と Ctrlキー(Macの場合はCommandキー)を押していたら送信
 const formElement = document.forms['message-form'];
